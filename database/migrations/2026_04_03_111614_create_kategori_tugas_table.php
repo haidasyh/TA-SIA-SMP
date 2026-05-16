@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('calon__murids', function (Blueprint $table) {
+        Schema::create('kategori_tugas', function (Blueprint $table) {
             $table->id();
+            $table->string('nama_kategori', 50);
+            $table->decimal('bobot', 5, 2);
             $table->timestamps();
         });
     }
@@ -22,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('calon__murids');
+        Schema::dropIfExists('kategori_tugas');
     }
 };
