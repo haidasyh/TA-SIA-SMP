@@ -11,7 +11,10 @@ class Siswa extends Model
 {
     use HasFactory;
 
+    protected $table = 'siswa';
+
     protected $fillable = [
+    'users_id',
     'kelas_id',
     'nis',
     'nisn',
@@ -25,7 +28,7 @@ class Siswa extends Model
 
         public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'users_id');
     }
 
     public function kelas(): BelongsTo

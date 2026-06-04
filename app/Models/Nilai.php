@@ -17,6 +17,7 @@ class Nilai extends Model
         'mapel_id',
         'semester_id',
         'kategori_id',
+        'tugas_id',
         'skor_nilai',
         'keterangan',
     ];
@@ -39,5 +40,10 @@ class Nilai extends Model
     public function kategori(): BelongsTo
     {
         return $this->belongsTo(KategoriTugas::class, 'kategori_id');
+    }
+
+    public function tugas(): BelongsTo
+    {
+        return $this->belongsTo(Tugas::class);
     }
 }

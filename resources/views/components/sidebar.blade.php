@@ -1,7 +1,7 @@
 @push('styles')
     <style>
         .sidebar {
-            background: linear-gradient(180deg, var(--navy), var(--slate));
+            background: #3498db;
             min-height: 100vh;
             padding: 1.5rem 1rem;
         }
@@ -158,28 +158,36 @@
         $roleMenus = [
             'administrator' => [
                 ['icon' => 'bi-speedometer2', 'label' => 'Dashboard', 'route' => 'dashboard.admin'],
-                ['icon' => 'bi-person-plus', 'label' => 'Verifikasi Pendaftar', 'route' => 'admin.calon-siswa.index'],
-                ['icon' => 'bi-people', 'label' => 'Data Siswa', 'route' => '#'],
-                ['icon' => 'bi-person-badge', 'label' => 'Data Guru', 'route' => '#'],
-                ['icon' => 'bi-book', 'label' => 'Mata Pelajaran', 'route' => '#'],
+                ['icon' => 'bi-people', 'label' => 'Data Calon Siswa', 'route' => 'admin.calon-siswa.index'],
+                ['icon' => 'bi-person', 'label' => 'Data Siswa', 'route' => 'admin.siswa.index'],
+                ['icon' => 'bi-person-badge', 'label' => 'Data Guru', 'route' => 'admin.guru.index'],
+                ['icon' => 'bi-person-check', 'label' => 'Wali Kelas', 'route' => 'admin.wali-kelas.index'],
+                ['icon' => 'bi-book', 'label' => 'Mata Pelajaran', 'route' => 'admin.mata-pelajaran.index'],
+                ['icon' => 'bi-door-open', 'label' => 'Data Kelas', 'route' => 'admin.kelas.index'],
+                ['icon' => 'bi-calendar-week', 'label' => 'Jadwal Pelajaran', 'route' => 'admin.jadwal.index'],
+                ['icon' => 'bi-person-gear', 'label' => 'Data User', 'route' => 'admin.user.index'],
+                ['icon' => 'bi-calendar-check', 'label' => 'Kelola Jadwal PPDB', 'route' => 'admin.jadwal-ppdb.index'],
+                ['icon' => 'bi-file-earmark-text', 'label' => 'Kelola Syarat PPDB', 'route' => 'admin.persyaratan-ppdb.index'],          
             ],
             'guru' => [
                 ['icon' => 'bi-speedometer2', 'label' => 'Dashboard', 'route' => 'dashboard.guru'],
-                ['icon' => 'bi-calendar', 'label' => 'Jadwal Mengajar', 'route' => '#'],
-                ['icon' => 'bi-people', 'label' => 'Daftar Siswa', 'route' => '#'],
-                ['icon' => 'bi-file-earmark-spreadsheet', 'label' => 'Input Nilai', 'route' => '#'],
+                ['icon' => 'bi-calendar', 'label' => 'Jadwal Mengajar', 'route' => 'guru.jadwal-mengajar'],
+                ['icon' => 'bi-people', 'label' => 'Daftar Siswa', 'route' => 'guru.daftar-siswa'],
+                ['icon' => 'bi-file-earmark-spreadsheet', 'label' => 'Input Nilai', 'route' => 'guru.input-nilai'],
+                ['icon' => 'bi-file-earmark-text', 'label' => 'Tugas', 'route' => 'guru.daftar-tugas'],
             ],
             'wali kelas' => [
                 ['icon' => 'bi-speedometer2', 'label' => 'Dashboard', 'route' => 'dashboard.walikelas'],
-                ['icon' => 'bi-calendar-check', 'label' => 'Presensi Siswa', 'route' => '#'],
-                ['icon' => 'bi-clipboard-data', 'label' => 'Rekap Presensi', 'route' => '#'],
-                ['icon' => 'bi-file-earmark-spreadsheet', 'label' => 'Rekap Nilai', 'route' => '#'],
+                ['icon' => 'bi-calendar-check', 'label' => 'Presensi Siswa', 'route' => 'walikelas.presensi-siswa'],
+                ['icon' => 'bi-clipboard-data', 'label' => 'Rekap Presensi', 'route' => 'walikelas.rekap-presensi'],
+                ['icon' => 'bi-file-earmark-spreadsheet', 'label' => 'Rekap Nilai', 'route' => 'walikelas.rekap-nilai'],
             ],
             'siswa' => [
                 ['icon' => 'bi-speedometer2', 'label' => 'Dashboard', 'route' => 'dashboard.siswa'],
-                ['icon' => 'bi-calendar', 'label' => 'Jadwal Pelajaran', 'route' => '#'],
-                ['icon' => 'bi-clipboard-data', 'label' => 'Nilai', 'route' => '#'],
-                ['icon' => 'bi-calendar-check', 'label' => 'Presensi', 'route' => '#'],
+                ['icon' => 'bi-calendar', 'label' => 'Jadwal Pelajaran', 'route' => 'siswa.jadwal-pelajaran'],
+                ['icon' => 'bi-clipboard-data', 'label' => 'Nilai', 'route' => 'siswa.nilai'],
+                ['icon' => 'bi-calendar-check', 'label' => 'Presensi', 'route' => 'siswa.rekap-presensi'],
+                ['icon' => 'bi-file-earmark-text', 'label' => 'Tugas', 'route' => 'siswa.daftar-tugas'],
             ],
         ];
         

@@ -94,6 +94,7 @@
                 <h1 class="persyaratan-heading">Persyaratan Pendaftaran</h1>
                 <p class="persyaratan-copy">Informasi lengkap tentang syarat dan ketentuan pendaftaran calon murid baru SMP Negeri 1 Bataguh.</p>
 
+                {{-- DINAMIS: SEKSI JADWAL PELAKSANAAN --}}
                 <div class="mb-5">
                     <h3 class="persyaratan-section-title">
                         <i class="bi bi-calendar-check"></i>
@@ -110,29 +111,24 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Pendaftaran & Verifikasi Berkas</td>
-                                    <td>01 Juni 2025 s/d 30 Juni 2025</td>
-                                    <td>08.00 - 16.00 WIB</td>
-                                    <td>Online / Offline</td>
-                                </tr>
-                                <tr>
-                                    <td>Pengumuman Hasil Seleksi</td>
-                                    <td>05 Juli 2025</td>
-                                    <td>10.00 WIB</td>
-                                    <td>Website Sekolah</td>
-                                </tr>
-                                <tr>
-                                    <td>Daftar Ulang</td>
-                                    <td>07 Juli 2025 s/d 10 Juli 2025</td>
-                                    <td>08.00 - 15.00 WIB</td>
-                                    <td>SMP Negeri 1 Bataguh</td>
-                                </tr>
+                                @forelse($jadwal as $item)
+                                    <tr>
+                                        <td>{{ $item->kegiatan }}</td>
+                                        <td>{{ $item->tanggal }}</td>
+                                        <td>{{ $item->waktu }}</td>
+                                        <td>{{ $item->lokasi }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">Belum ada data jadwal pelaksanaan.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
                 </div>
 
+                {{-- DINAMIS: SEKSI PERSYARATAN UMUM & KHUSUS --}}
                 <div class="mb-5">
                     <h3 class="persyaratan-section-title">
                         <i class="bi bi-clipboard-check"></i>
@@ -142,38 +138,26 @@
                     <div class="mb-4">
                         <h5 class="persyaratan-subtitle">1. Persyaratan Umum</h5>
                         <ol class="persyaratan-list">
-                            <li>Berusia paling tinggi 15 (lima belas) tahun pada tanggal 01 Juli 2025;</li>
-                            <li>Bersedia mengikuti seluruh kegiatan sekolah;</li>
-                            <li>Kartu keluarga (KK);</li>
-                            <li>Akta kelahiran (asli surat keterangan lahir yang dikeluarkan oleh pihak yang berwenang dan dilegalisir oleh domisili calon Murid);</li>
-                            <li>Calon tangan buku NISN SD/MI;</li>
-                            <li>Memiliki surat keterangan untuk penyandang disabilitas (Murid yang berkebutuhan dan dilegalisir oleh unit pelayanan setempat lain).</li>
+                            {!! $persyaratan->umum ?? '<li>Belum ada data persyaratan umum.</li>' !!}
                         </ol>
                     </div>
 
                     <div>
                         <h5 class="persyaratan-subtitle">2. Persyaratan Khusus</h5>
                         <ol class="persyaratan-list">
-                            <li>Calon murid harus wajib mengisi formulir pendaftaran secara lengkap dan pada portal yang tersedia;</li>
-                            <li>Sesuai ketentuan formulir pendaftaran dan kecocokan tanggapan dengan data primer formulir pendaftaran;</li>
-                            <li>Dinas pendidikan tetap mempertimbangkan usia calon murid baru yang bersekolah di luar kecamatan;</li>
-                            <li>Calon murid harus melengkapi dokumen pendukung yang diminta pada portal pendaftaran online;</li>
-                            <li>Jika sistem pendaftaran sudah melebihi kuota, maka penerima pendaftaran berdasarkan urutan waktu pendaftaran dan hasil verifikasi dilakukan;</li>
-                            <li>Calon murid baru harus memahami seluruh ketentuan dan tata tertib apabila diterima.</li>
+                            {!! $persyaratan->khusus ?? '<li>Belum ada data persyaratan khusus.</li>' !!}
                         </ol>
                     </div>
                 </div>
 
+                {{-- DINAMIS: SEKSI ALUR PELAKSANAAN --}}
                 <div>
                     <h3 class="persyaratan-section-title">
                         <i class="bi bi-list-stars"></i>
                         Alur Pelaksanaan
                     </h3>
                     <ol class="persyaratan-list">
-                        <li>Calon murid baru wajib mengisi dan mengunggah dokumen yang telah ditentukan pada portal pendaftaran tersebut sesuai dengan yang ditentukan bagian pendaftaran;</li>
-                        <li>Panitia sekolah melakukan verifikasi dan validasi berkas yang calon murid baru telah upload;</li>
-                        <li>Calon murid baru melihat pengumuman hasil seleksi sesuai jadwal yang telah ditentukan;</li>
-                        <li>Calon murid baru yang telah lulus seleksi, wajib melakukan daftar ulang/ lapor diri sesuai jadwal ke sekolah dengan membawa berkas yang diminta saat pengumuman pendaftaran.</li>
+                        {!! $persyaratan->alur ?? '<li>Belum ada data alur pelaksanaan.</li>' !!}
                     </ol>
                 </div>
             </div>

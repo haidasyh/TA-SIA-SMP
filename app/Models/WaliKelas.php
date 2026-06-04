@@ -27,9 +27,4 @@ class WaliKelas extends Model
     {
         return $this->belongsTo(Kelas::class, 'kelas_id');
     }
-
-    public function semester(): BelongsTo
-    {
-        return $this->belongsTo(Semester::class, 'semester_id');
-    }
 }

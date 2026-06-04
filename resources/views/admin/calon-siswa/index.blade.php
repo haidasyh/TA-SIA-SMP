@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Verifikasi Pendaftar - Admin')
+@section('title', 'Data Calon Siswa - Admin')
 
 @section('content')
     <div class="container-fluid p-0">
@@ -12,8 +12,16 @@
                 <div class="mb-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h1 class="fw-bold">Verifikasi Pendaftar</h1>
-                            <p class="text-muted">Kelola verifikasi calon siswa baru</p>
+                            <h1 class="fw-bold">Data Calon Siswa</h1>
+                            <p class="text-muted">Kelola data calon siswa baru</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('admin.calon-siswa.export') }}" class="btn btn-success">
+                                <i class="bi bi-download me-2"></i> Unduh Rekap
+                            </a>
+                            <a href="{{ route('admin.calon-siswa.create') }}" class="btn btn-primary">
+                                <i class="bi bi-plus-lg me-2"></i> Tambah
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -60,6 +68,9 @@
                                                     <a href="{{ route('admin.calon-siswa.show', $cs->id) }}" class="btn btn-sm btn-info">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
+                                                    <a href="{{ route('admin.calon-siswa.edit', $cs->id) }}" class="btn btn-sm btn-warning">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
                                                     @if($cs->status_verifikasi == 'Pending')
                                                         <form method="POST" action="{{ route('admin.calon-siswa.verifikasi', $cs->id) }}" class="d-inline">
                                                             @csrf
@@ -74,6 +85,13 @@
                                                             </button>
                                                         </form>
                                                     @endif
+                                                    <form method="POST" action="{{ route('admin.calon-siswa.destroy', $cs->id) }}" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus calon siswa ini?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-danger">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </td>
                                         </tr>
