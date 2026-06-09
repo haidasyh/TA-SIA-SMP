@@ -26,6 +26,44 @@
                     </div>
                 </div>
 
+                <div class="card mb-4 shadow-sm border-0">
+                    <div class="card-body">
+                        <form action="{{ route('admin.calon-siswa.index') }}" method="GET" class="row g-2 align-items-center">
+                            
+                            <div class="col-md-4">
+                                <input type="text" name="search" class="form-control" 
+                                       placeholder="Cari Nama / NISN / No. Pendaftaran..." 
+                                       value="{{ request('search') }}">
+                            </div>
+
+                            <div class="col-md-3">
+                                <select name="jenis_kelamin" class="form-select">
+                                    <option value="">-- Semua Jenis Kelamin --</option>
+                                    <option value="Laki-laki" {{ request('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                                    <option value="Perempuan" {{ request('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <select name="status" class="form-select">
+                                    <option value="">-- Semua Status --</option>
+                                    <option value="Pending" {{ request('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="Diterima" {{ request('status') == 'Diterima' ? 'selected' : '' }}>Diterima</option>
+                                    <option value="Ditolak" {{ request('status') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-2 d-flex gap-1">
+                                <button type="submit" class="btn btn-primary flex-grow-1">Cari</button>
+                                @if(request()->anyFilled(['search', 'jenis_kelamin', 'status']))
+                                    <a href="{{ route('admin.calon-siswa.index') }}" class="btn btn-secondary">Reset</a>
+                                @endif
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
                 @if(session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ session('success') }}
@@ -103,6 +141,11 @@
                                 </tbody>
                             </table>
                         </div>
+                        
+                        <div class="mt-3">
+                            {{ $calonSiswa->links() }}
+                        </div>
+
                     </div>
                 </div>
             </div>

@@ -9,9 +9,33 @@ use Illuminate\Http\Request;
 
 class AdminCalonSiswaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $calonSiswa = CalonSiswa::orderBy('created_at', 'desc')->get();
+        $query = CalonSiswa::query();
+
+        // 1. Logika Pencarian (Nama, NISN, dan Nomor Pendaftaran)
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nama', 'like', '%' . $search . '%')
+                  ->orWhere('nisn', 'like', '%' . $search . '%')
+                  ->orWhere('no_pendaftaran', 'like', '%' . $search . '%');
+            });
+        }
+
+        // 2. Logika Filter Jenis Kelamin
+        if ($request->has('jenis_kelamin') && $request->jenis_kelamin != '') {
+            $query->where('jenis_kelamin', $request->jenis_kelamin);
+        }
+
+        // 3. Logika Filter Status (DIUBAH ke 'status_verifikasi' sesuai database asli kamu)
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status_verifikasi', $request->status);
+        }
+
+        // Tampilkan dengan Pagination (10 data per halaman) dan simpan Query String URL-nya
+        $calonSiswa = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
         return view('admin.calon-siswa.index', compact('calonSiswa'));
     }
 
@@ -33,6 +57,7 @@ class AdminCalonSiswaController extends Controller
         ]);
 
         $validated['no_pendaftaran'] = 'PSB-' . date('Ymd') . '-' . rand(1000, 9999);
+        $validated['status_verifikasi'] = 'Pending'; // DIUBAH ke 'status_verifikasi'
 
         CalonSiswa::create($validated);
 
@@ -63,7 +88,7 @@ class AdminCalonSiswaController extends Controller
             'no_hp_ortu' => 'required|string|max:15',
             'asal_sekolah' => 'required|string|max:100',
             'alamat' => 'required|string',
-            'status_verifikasi' => 'required|in:Pending,Diterima,Ditolak',
+            'status_verifikasi' => 'required|in:Pending,Diterima,Ditolak', // DIUBAH ke 'status_verifikasi'
         ]);
 
         $calonSiswa->update($validated);
@@ -82,7 +107,7 @@ class AdminCalonSiswaController extends Controller
     public function verifikasi($id)
     {
         $calonSiswa = CalonSiswa::findOrFail($id);
-        $calonSiswa->update(['status_verifikasi' => 'Diterima']);
+        $calonSiswa->update(['status_verifikasi' => 'Diterima']); // DIUBAH ke 'status_verifikasi'
 
         return redirect()->route('admin.calon-siswa.index')->with('success', 'Calon siswa berhasil diverifikasi (Diterima)!');
     }
@@ -90,7 +115,7 @@ class AdminCalonSiswaController extends Controller
     public function tolak($id)
     {
         $calonSiswa = CalonSiswa::findOrFail($id);
-        $calonSiswa->update(['status_verifikasi' => 'Ditolak']);
+        $calonSiswa->update(['status_verifikasi' => 'Ditolak']); // DIUBAH ke 'status_verifikasi'
 
         return redirect()->route('admin.calon-siswa.index')->with('success', 'Calon siswa berhasil ditolak!');
     }
