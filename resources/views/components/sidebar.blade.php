@@ -50,7 +50,7 @@
             gap: 0.25rem;
         }
 
-        .sidebar-menu-item {
+        .sidebar-menu-item, .sidebar-dropdown-toggle {
             display: flex;
             align-items: center;
             gap: 0.75rem;
@@ -59,9 +59,14 @@
             text-decoration: none;
             border-radius: 0.75rem;
             transition: 0.2s ease;
+            cursor: pointer;
+            background: transparent;
+            border: 0;
+            width: 100%;
+            text-align: left;
         }
 
-        .sidebar-menu-item:hover {
+        .sidebar-menu-item:hover, .sidebar-dropdown-toggle:hover {
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
         }
@@ -72,10 +77,30 @@
             font-weight: 600;
         }
 
-        .sidebar-menu-item i {
+        .sidebar-menu-item i, .sidebar-dropdown-toggle i {
             font-size: 1.1rem;
             width: 20px;
             text-align: center;
+        }
+
+        /* --- Styling Tambahan Untuk Dropdown --- */
+        .sidebar-dropdown-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            padding-left: 1.5rem;
+            margin-top: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-dropdown-toggle .arrow-icon {
+            margin-left: auto;
+            transition: transform 0.2s ease;
+            font-size: 0.8rem;
+        }
+
+        .sidebar-dropdown-toggle[aria-expanded="true"] .arrow-icon {
+            transform: rotate(90deg);
         }
 
         .sidebar-divider {
@@ -157,37 +182,51 @@
         
         $roleMenus = [
             'administrator' => [
-                ['icon' => 'bi-speedometer2', 'label' => 'Dashboard', 'route' => 'dashboard.admin'],
-                ['icon' => 'bi-people', 'label' => 'Data Calon Siswa', 'route' => 'admin.calon-siswa.index'],
-                ['icon' => 'bi-person', 'label' => 'Data Siswa', 'route' => 'admin.siswa.index'],
-                ['icon' => 'bi-person-badge', 'label' => 'Data Guru', 'route' => 'admin.guru.index'],
-                ['icon' => 'bi-person-check', 'label' => 'Wali Kelas', 'route' => 'admin.wali-kelas.index'],
-                ['icon' => 'bi-book', 'label' => 'Mata Pelajaran', 'route' => 'admin.mata-pelajaran.index'],
-                ['icon' => 'bi-door-open', 'label' => 'Data Kelas', 'route' => 'admin.kelas.index'],
-                ['icon' => 'bi-calendar-week', 'label' => 'Jadwal Pelajaran', 'route' => 'admin.jadwal.index'],
-                ['icon' => 'bi-person-gear', 'label' => 'Data User', 'route' => 'admin.user.index'],
-                ['icon' => 'bi-calendar-check', 'label' => 'Kelola Jadwal PPDB', 'route' => 'admin.jadwal-ppdb.index'],
-                ['icon' => 'bi-file-earmark-text', 'label' => 'Kelola Syarat PPDB', 'route' => 'admin.persyaratan-ppdb.index'],          
+                ['type' => 'link', 'icon' => 'bi-speedometer2', 'label' => 'Dashboard', 'route' => 'dashboard.admin'],
+                ['type' => 'link', 'icon' => 'bi-people', 'label' => 'Data Calon Siswa', 'route' => 'admin.calon-siswa.index'],
+                
+                // Pembungkus Dropdown Data Master
+                [
+                    'type' => 'dropdown',
+                    'icon' => 'bi-database',
+                    'label' => 'Data Master',
+                    'id' => 'dropdownDataMaster',
+                    // Logic ini membuat dropdown otomatis terbuka saat sub-menu di dalamnya aktif
+                    'isOpen' => request()->routeIs('admin.siswa.*') || request()->routeIs('admin.guru.*') || request()->routeIs('admin.wali-kelas.*') || request()->routeIs('admin.mata-pelajaran.*') || request()->routeIs('admin.kelas.*') || request()->routeIs('admin.user.*'),
+                    'submenus' => [
+                        ['icon' => 'bi-person-badge', 'label' => 'Data Guru', 'route' => 'admin.guru.index'],
+                        ['icon' => 'bi-person', 'label' => 'Data Siswa', 'route' => 'admin.siswa.index'],
+                        ['icon' => 'bi-book', 'label' => 'Mata Pelajaran', 'route' => 'admin.mata-pelajaran.index'],
+                        ['icon' => 'bi-door-open', 'label' => 'Data Kelas', 'route' => 'admin.kelas.index'],
+                        ['icon' => 'bi-person-check', 'label' => 'Wali Kelas', 'route' => 'admin.wali-kelas.index'],
+                        ['icon' => 'bi-person-gear', 'label' => 'Data User', 'route' => 'admin.user.index'],
+                    ]
+                ],
+
+                ['type' => 'link', 'icon' => 'bi-calendar-week', 'label' => 'Jadwal Pelajaran', 'route' => 'admin.jadwal.index'],
+                ['type' => 'link', 'icon' => 'bi-house-door', 'label' => 'Kelola Beranda PPDB', 'route' => 'admin.beranda.index'],
+                ['type' => 'link', 'icon' => 'bi-file-earmark-text', 'label' => 'Kelola Syarat PPDB', 'route' => 'admin.persyaratan-ppdb.index'], 
+                ['type' => 'link', 'icon' => 'bi-calendar-check', 'label' => 'Kelola Jadwal PPDB', 'route' => 'admin.jadwal-ppdb.index'],         
             ],
             'guru' => [
-                ['icon' => 'bi-speedometer2', 'label' => 'Dashboard', 'route' => 'dashboard.guru'],
-                ['icon' => 'bi-calendar', 'label' => 'Jadwal Mengajar', 'route' => 'guru.jadwal-mengajar'],
-                ['icon' => 'bi-people', 'label' => 'Daftar Siswa', 'route' => 'guru.daftar-siswa'],
-                ['icon' => 'bi-file-earmark-spreadsheet', 'label' => 'Input Nilai', 'route' => 'guru.input-nilai'],
-                ['icon' => 'bi-file-earmark-text', 'label' => 'Tugas', 'route' => 'guru.daftar-tugas'],
+                ['type' => 'link', 'icon' => 'bi-speedometer2', 'label' => 'Dashboard', 'route' => 'dashboard.guru'],
+                ['type' => 'link', 'icon' => 'bi-calendar', 'label' => 'Jadwal Mengajar', 'route' => 'guru.jadwal-mengajar'],
+                ['type' => 'link', 'icon' => 'bi-people', 'label' => 'Daftar Siswa', 'route' => 'guru.daftar-siswa'],
+                ['type' => 'link', 'icon' => 'bi-file-earmark-spreadsheet', 'label' => 'Input Nilai', 'route' => 'guru.input-nilai'],
+                ['type' => 'link', 'icon' => 'bi-file-earmark-text', 'label' => 'Tugas', 'route' => 'guru.daftar-tugas'],
             ],
             'wali kelas' => [
-                ['icon' => 'bi-speedometer2', 'label' => 'Dashboard', 'route' => 'dashboard.walikelas'],
-                ['icon' => 'bi-calendar-check', 'label' => 'Presensi Siswa', 'route' => 'walikelas.presensi-siswa'],
-                ['icon' => 'bi-clipboard-data', 'label' => 'Rekap Presensi', 'route' => 'walikelas.rekap-presensi'],
-                ['icon' => 'bi-file-earmark-spreadsheet', 'label' => 'Rekap Nilai', 'route' => 'walikelas.rekap-nilai'],
+                ['type' => 'link', 'icon' => 'bi-speedometer2', 'label' => 'Dashboard', 'route' => 'dashboard.walikelas'],
+                ['type' => 'link', 'icon' => 'bi-calendar-check', 'label' => 'Presensi Siswa', 'route' => 'walikelas.presensi-siswa'],
+                ['type' => 'link', 'icon' => 'bi-clipboard-data', 'label' => 'Rekap Presensi', 'route' => 'walikelas.rekap-presensi'],
+                ['type' => 'link', 'icon' => 'bi-file-earmark-spreadsheet', 'label' => 'Rekap Nilai', 'route' => 'walikelas.rekap-nilai'],
             ],
             'siswa' => [
-                ['icon' => 'bi-speedometer2', 'label' => 'Dashboard', 'route' => 'dashboard.siswa'],
-                ['icon' => 'bi-calendar', 'label' => 'Jadwal Pelajaran', 'route' => 'siswa.jadwal-pelajaran'],
-                ['icon' => 'bi-clipboard-data', 'label' => 'Nilai', 'route' => 'siswa.nilai'],
-                ['icon' => 'bi-calendar-check', 'label' => 'Presensi', 'route' => 'siswa.rekap-presensi'],
-                ['icon' => 'bi-file-earmark-text', 'label' => 'Tugas', 'route' => 'siswa.daftar-tugas'],
+                ['type' => 'link', 'icon' => 'bi-speedometer2', 'label' => 'Dashboard', 'route' => 'dashboard.siswa'],
+                ['type' => 'link', 'icon' => 'bi-calendar', 'label' => 'Jadwal Pelajaran', 'route' => 'siswa.jadwal-pelajaran'],
+                ['type' => 'link', 'icon' => 'bi-clipboard-data', 'label' => 'Nilai', 'route' => 'siswa.nilai'],
+                ['type' => 'link', 'icon' => 'bi-calendar-check', 'label' => 'Presensi', 'route' => 'siswa.rekap-presensi'],
+                ['type' => 'link', 'icon' => 'bi-file-earmark-text', 'label' => 'Tugas', 'route' => 'siswa.daftar-tugas'],
             ],
         ];
         
@@ -210,13 +249,39 @@
         </div>
     @endif
 
-    <nav class="sidebar-menu">
+<nav class="sidebar-menu">
         @foreach($currentMenu as $menu)
-            <a href="{{ $menu['route'] != '#' ? route($menu['route']) : '#' }}" 
-               class="sidebar-menu-item {{ request()->routeIs($menu['route']) ? 'active' : '' }}">
-                <i class="bi {{ $menu['icon'] }}"></i>
-                <span>{{ $menu['label'] }}</span>
-            </a>
+            {{-- JIKA TYPE MENU ADALAH DROPDOWN --}}
+            @if(($menu['type'] ?? 'link') === 'dropdown')
+                <div>
+                    <button class="sidebar-dropdown-toggle" type="button" data-bs-toggle="collapse" 
+                            data-bs-target="#{{ $menu['id'] }}" aria-expanded="{{ $menu['isOpen'] ? 'true' : 'false' }}">
+                        <i class="bi {{ $menu['icon'] }}"></i>
+                        <span>{{ $menu['label'] }}</span>
+                        <i class="bi bi-chevron-right arrow-icon"></i>
+                    </button>
+                    
+                    <div class="collapse {{ $menu['isOpen'] ? 'show' : '' }}" id="{{ $menu['id'] }}">
+                        <div class="sidebar-dropdown-menu">
+                            @foreach($menu['submenus'] as $sub)
+                                <a href="{{ route($sub['route']) }}" 
+                                   class="sidebar-menu-item {{ request()->routeIs($sub['route']) ? 'active' : '' }}">
+                                    <i class="bi {{ $sub['icon'] }}"></i>
+                                    <span>{{ $sub['label'] }}</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            
+            {{-- JIKA TYPE MENU ADALAH LINK BIASA --}}
+            @else
+                <a href="{{ $menu['route'] != '#' ? route($menu['route']) : '#' }}" 
+                   class="sidebar-menu-item {{ request()->routeIs($menu['route']) ? 'active' : '' }}">
+                    <i class="bi {{ $menu['icon'] }}"></i>
+                    <span>{{ $menu['label'] }}</span>
+                </a>
+            @endif
         @endforeach
     </nav>
 

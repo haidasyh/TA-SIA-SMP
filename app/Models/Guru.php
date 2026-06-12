@@ -33,8 +33,8 @@ class Guru extends Model
         return $this->hasMany(Jadwal::class);
     }
 
-    public function walikelas(): HasOne
+    public function walikelas(): HasMany
     {
-        return $this->hasOne(WaliKelas::class);
+        return $this->hasMany(WaliKelas::class);
     }
 }

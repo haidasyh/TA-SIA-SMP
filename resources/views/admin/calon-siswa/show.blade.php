@@ -81,12 +81,18 @@
                                 @if($calonSiswa->berkas_akta)
                                     <div class="mb-4">
                                         <label class="fw-semibold mb-2 d-block">Scan/Foto Surat Keterangan Lulus/SKHU</label>
-                                        @if(str_ends_with(strtolower($calonSiswa->berkas_akta), '.pdf'))
-                                            <a href="{{ asset('storage/' . $calonSiswa->berkas_akta) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-file-earmark-pdf me-1"></i> Lihat Berkas
+                                        <div class="d-flex gap-2 mb-2">
+                                            @if(str_ends_with(strtolower($calonSiswa->berkas_akta), '.pdf'))
+                                                <a href="{{ $calonSiswa->berkas_akta_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-file-earmark-pdf me-1"></i> Lihat Berkas
+                                                </a>
+                                            @endif
+                                            <a href="{{ route('admin.calon-siswa.download', [$calonSiswa->id, 'akta']) }}" class="btn btn-sm btn-success">
+                                                <i class="bi bi-download me-1"></i> Download
                                             </a>
-                                        @else
-                                            <img src="{{ asset('storage/' . $calonSiswa->berkas_akta) }}" alt="SKHU" class="img-thumbnail" style="max-width: 100%;">
+                                        </div>
+                                        @if(!str_ends_with(strtolower($calonSiswa->berkas_akta), '.pdf'))
+                                            <img src="{{ $calonSiswa->berkas_akta_url }}" alt="SKHU" class="img-thumbnail" style="max-width: 100%;">
                                         @endif
                                     </div>
                                 @endif
@@ -94,12 +100,18 @@
                                 @if($calonSiswa->berkas_kk)
                                     <div class="mb-4">
                                         <label class="fw-semibold mb-2 d-block">Kartu Keluarga (KK)</label>
-                                        @if(str_ends_with(strtolower($calonSiswa->berkas_kk), '.pdf'))
-                                            <a href="{{ asset('storage/' . $calonSiswa->berkas_kk) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-file-earmark-pdf me-1"></i> Lihat Berkas
+                                        <div class="d-flex gap-2 mb-2">
+                                            @if(str_ends_with(strtolower($calonSiswa->berkas_kk), '.pdf'))
+                                                <a href="{{ $calonSiswa->berkas_kk_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-file-earmark-pdf me-1"></i> Lihat Berkas
+                                                </a>
+                                            @endif
+                                            <a href="{{ route('admin.calon-siswa.download', [$calonSiswa->id, 'kk']) }}" class="btn btn-sm btn-success">
+                                                <i class="bi bi-download me-1"></i> Download
                                             </a>
-                                        @else
-                                            <img src="{{ asset('storage/' . $calonSiswa->berkas_kk) }}" alt="KK" class="img-thumbnail" style="max-width: 100%;">
+                                        </div>
+                                        @if(!str_ends_with(strtolower($calonSiswa->berkas_kk), '.pdf'))
+                                            <img src="{{ $calonSiswa->berkas_kk_url }}" alt="KK" class="img-thumbnail" style="max-width: 100%;">
                                         @endif
                                     </div>
                                 @endif
@@ -107,20 +119,50 @@
                                 @if($calonSiswa->berkas_ktp_ortu)
                                     <div class="mb-4">
                                         <label class="fw-semibold mb-2 d-block">KTP Orang Tua</label>
-                                        @if(str_ends_with(strtolower($calonSiswa->berkas_ktp_ortu), '.pdf'))
-                                            <a href="{{ asset('storage/' . $calonSiswa->berkas_ktp_ortu) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-file-earmark-pdf me-1"></i> Lihat Berkas
+                                        <div class="d-flex gap-2 mb-2">
+                                            @if(str_ends_with(strtolower($calonSiswa->berkas_ktp_ortu), '.pdf'))
+                                                <a href="{{ $calonSiswa->berkas_ktp_ortu_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-file-earmark-pdf me-1"></i> Lihat Berkas
+                                                </a>
+                                            @endif
+                                            <a href="{{ route('admin.calon-siswa.download', [$calonSiswa->id, 'ktp']) }}" class="btn btn-sm btn-success">
+                                                <i class="bi bi-download me-1"></i> Download
                                             </a>
-                                        @else
-                                            <img src="{{ asset('storage/' . $calonSiswa->berkas_ktp_ortu) }}" alt="KTP Orang Tua" class="img-thumbnail" style="max-width: 100%;">
+                                        </div>
+                                        @if(!str_ends_with(strtolower($calonSiswa->berkas_ktp_ortu), '.pdf'))
+                                            <img src="{{ $calonSiswa->berkas_ktp_ortu_url }}" alt="KTP Orang Tua" class="img-thumbnail" style="max-width: 100%;">
                                         @endif
                                     </div>
                                 @endif
 
+                                @if($calonSiswa->berkas_persetujuan)
+                                    <div class="mb-4">
+                                        <label class="fw-semibold mb-2 d-block">Berkas Persetujuan</label>
+                                        <div class="d-flex gap-2 mb-2">
+                                            @if(str_ends_with(strtolower($calonSiswa->berkas_persetujuan), '.pdf'))
+                                                <a href="{{ $calonSiswa->berkas_persetujuan_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-file-earmark-pdf me-1"></i> Lihat Berkas
+                                                </a>
+                                            @endif
+                                            <a href="{{ route('admin.calon-siswa.download', [$calonSiswa->id, 'persetujuan']) }}" class="btn btn-sm btn-success">
+                                                <i class="bi bi-download me-1"></i> Download
+                                            </a>
+                                        </div>
+                                        @if(!str_ends_with(strtolower($calonSiswa->berkas_persetujuan), '.pdf'))
+                                            <img src="{{ $calonSiswa->berkas_persetujuan_url }}" alt="Berkas Persetujuan" class="img-thumbnail" style="max-width: 100%;">
+                                        @endif
+                                    </div>
+                                @endif                                
+
                                 @if($calonSiswa->pasfoto)
                                     <div class="mb-4">
                                         <label class="fw-semibold mb-2 d-block">Pas Foto</label>
-                                        <img src="{{ asset('storage/' . $calonSiswa->pasfoto) }}" alt="Pas Foto" class="img-thumbnail" style="max-width: 200px;">
+                                        <div class="d-flex gap-2 mb-2">
+                                            <a href="{{ route('admin.calon-siswa.download', [$calonSiswa->id, 'pasfoto']) }}" class="btn btn-sm btn-success">
+                                                <i class="bi bi-download me-1"></i> Download
+                                            </a>
+                                        </div>
+                                        <img src="{{ $calonSiswa->pasfoto_url }}" alt="Pas Foto" class="img-thumbnail" style="max-width: 200px;">
                                     </div>
                                 @endif
                             </div>

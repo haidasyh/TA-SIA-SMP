@@ -1,28 +1,38 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CalonSiswaController;
-use App\Http\Controllers\AdminCalonSiswaController;
-use App\Http\Controllers\SiswaController;
-use App\Http\Controllers\GuruController;
-use App\Http\Controllers\MataPelajaranController;
-use App\Http\Controllers\KelasController;
-use App\Http\Controllers\JadwalController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\AdminWaliKelasController;
-use App\Http\Controllers\GuruDashboardController;
-use App\Http\Controllers\WaliKelasDashboardController;
-use App\Http\Controllers\SiswaDashboardController;
 use App\Http\Controllers\PpdbController;
+use App\Http\Controllers\CalonSiswaController;
+
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminCalonSiswaController;
+use App\Http\Controllers\Admin\SiswaController;
+use App\Http\Controllers\Admin\GuruController;
+use App\Http\Controllers\Admin\MataPelajaranController;
+use App\Http\Controllers\Admin\KelasController;
+use App\Http\Controllers\Admin\JadwalController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AdminWaliKelasController;
+use App\Http\Controllers\Admin\AdminBerandaPpdbController;
+use App\Http\Controllers\Admin\AdminPersyaratanPpdbController;
+use App\Http\Controllers\Admin\AdminJadwalPpdbController;
+
+use App\Http\Controllers\Guru\GuruDashboardController;
+use App\Http\Controllers\Guru\NilaiController;
+use App\Http\Controllers\Guru\TugasController;
+
+use App\Http\Controllers\WaliKelas\WaliKelasDashboardController;
+use App\Http\Controllers\WaliKelas\PresensiSiswaController;
+
+use App\Http\Controllers\Siswa\SiswaDashboardController;
 
 Route::get('/', function () {
-    return view('welcome');
+    $beranda = App\Models\Beranda::first() ?? new App\Models\Beranda();
+    return view('welcome', compact('beranda'));
 });
 
-//Route::get('/ppdb', function () {
- //   return view('ppdb');
-//})->name('ppdb');
 Route::get('/ppdb', [PpdbController::class, 'index'])->name('ppdb');
 Route::get('/hasil-seleksi', function () {
     $calonSiswa = App\Models\CalonSiswa::orderBy('no_pendaftaran')->get();
@@ -36,35 +46,38 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
     Route::post('/switch-role', [AuthController::class, 'switchRole'])->name('switch-role');
     
-    Route::get('/dashboard/admin', [AuthController::class, 'adminDashboard'])->name('dashboard.admin');
-    Route::get('/dashboard/guru', [AuthController::class, 'guruDashboard'])->name('dashboard.guru');
-    Route::get('/dashboard/walikelas', [AuthController::class, 'waliKelasDashboard'])->name('dashboard.walikelas');
-    Route::get('/dashboard/siswa', [AuthController::class, 'siswaDashboard'])->name('dashboard.siswa')->middleware('role:siswa');
+    Route::get('/dashboard/admin', [AdminDashboardController::class, 'index'])->name('dashboard.admin');
+    Route::get('/dashboard/guru', [GuruDashboardController::class, 'index'])->name('dashboard.guru');
+    Route::get('/dashboard/walikelas', [WaliKelasDashboardController::class, 'index'])->name('dashboard.walikelas');
+    Route::get('/dashboard/siswa', [SiswaDashboardController::class, 'index'])->name('dashboard.siswa')->middleware('role:siswa');
 
     Route::prefix('guru')->middleware('role:guru')->group(function () {
         Route::get('/jadwal-mengajar', [GuruDashboardController::class, 'jadwalMengajar'])->name('guru.jadwal-mengajar');
         Route::get('/daftar-siswa', [GuruDashboardController::class, 'daftarSiswa'])->name('guru.daftar-siswa');
-        Route::get('/input-nilai', [GuruDashboardController::class, 'inputNilai'])->name('guru.input-nilai');
-        Route::post('/input-nilai', [GuruDashboardController::class, 'storeNilai'])->name('guru.store-nilai');
-        Route::get('/tugas', [GuruDashboardController::class, 'daftarTugas'])->name('guru.daftar-tugas');
-        Route::get('/tugas/create', [GuruDashboardController::class, 'createTugas'])->name('guru.create-tugas');
-        Route::post('/tugas', [GuruDashboardController::class, 'storeTugas'])->name('guru.store-tugas');
-        Route::get('/tugas/{id}/edit', [GuruDashboardController::class, 'editTugas'])->name('guru.edit-tugas');
-        Route::put('/tugas/{id}', [GuruDashboardController::class, 'updateTugas'])->name('guru.update-tugas');
-        Route::delete('/tugas/{id}', [GuruDashboardController::class, 'destroyTugas'])->name('guru.destroy-tugas');
+        
+        Route::get('/input-nilai', [NilaiController::class, 'index'])->name('guru.input-nilai');
+        Route::post('/input-nilai', [NilaiController::class, 'store'])->name('guru.store-nilai');
+        
+        Route::resource('tugas', TugasController::class)->names([
+            'index'   => 'guru.daftar-tugas',
+            'create'  => 'guru.create-tugas',
+            'store'   => 'guru.store-tugas',
+            'edit'    => 'guru.edit-tugas',
+            'update'  => 'guru.update-tugas',
+            'destroy' => 'guru.destroy-tugas',
+        ]);
     });
 
     Route::prefix('walikelas')->middleware('role:wali kelas')->group(function () {
-        Route::get('/presensi-siswa', [WaliKelasDashboardController::class, 'presensiSiswa'])->name('walikelas.presensi-siswa');
-        Route::post('/presensi-siswa', [WaliKelasDashboardController::class, 'storePresensi'])->name('walikelas.store-presensi');
         Route::get('/rekap-presensi', [WaliKelasDashboardController::class, 'rekapPresensi'])->name('walikelas.rekap-presensi');
         Route::get('/rekap-nilai', [WaliKelasDashboardController::class, 'rekapNilai'])->name('walikelas.rekap-nilai');
-        Route::post('/store-presensi-bulk', [WaliKelasDashboardController::class, 'storePresensiBulk'])
-    ->name('walikelas.store-presensi-bulk');
-        });
+        
+        Route::get('/presensi-siswa', [PresensiSiswaController::class, 'index'])->name('walikelas.presensi-siswa');
+        Route::post('/presensi-siswa', [PresensiSiswaController::class, 'store'])->name('walikelas.store-presensi');
+        Route::post('/store-presensi-bulk', [PresensiSiswaController::class, 'storeBulk'])->name('walikelas.store-presensi-bulk');
+    });
 
     Route::prefix('siswa')->middleware('role:siswa')->group(function () {
-
         Route::get('/jadwal-pelajaran', [SiswaDashboardController::class, 'jadwalPelajaran'])->name('siswa.jadwal-pelajaran');
         Route::get('/rekap-presensi', [SiswaDashboardController::class, 'rekapPresensi'])->name('siswa.rekap-presensi');
         Route::get('/nilai', [SiswaDashboardController::class, 'nilai'])->name('siswa.nilai');
@@ -72,6 +85,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('admin')->middleware('role:administrator')->group(function () {
+        
         Route::resource('/calon-siswa', AdminCalonSiswaController::class)->names([
             'index' => 'admin.calon-siswa.index',
             'create' => 'admin.calon-siswa.create',
@@ -81,16 +95,24 @@ Route::middleware('auth')->group(function () {
             'update' => 'admin.calon-siswa.update',
             'destroy' => 'admin.calon-siswa.destroy',
         ]);
-
-        Route::resource('/jadwal-ppdb', App\Http\Controllers\AdminJadwalPpdbController::class)->names('admin.jadwal-ppdb'); //
-        Route::get('/persyaratan-ppdb', [App\Http\Controllers\AdminPersyaratanPpdbController::class, 'index'])->name('admin.persyaratan-ppdb.index');
-        Route::get('/persyaratan-ppdb/edit', [App\Http\Controllers\AdminPersyaratanPpdbController::class, 'edit'])->name('admin.persyaratan-ppdb.edit');
-        Route::put('/persyaratan-ppdb', [App\Http\Controllers\AdminPersyaratanPpdbController::class, 'update'])->name('admin.persyaratan-ppdb.update');
         Route::post('/calon-siswa/{id}/verifikasi', [AdminCalonSiswaController::class, 'verifikasi'])->name('admin.calon-siswa.verifikasi');
         Route::post('/calon-siswa/{id}/tolak', [AdminCalonSiswaController::class, 'tolak'])->name('admin.calon-siswa.tolak');
         Route::get('/calon-siswa-export', [AdminCalonSiswaController::class, 'export'])->name('admin.calon-siswa.export');
-Route::get('/siswa/export', [SiswaController::class, 'export'])->name('admin.siswa.export');
+        Route::get('/calon-siswa/{id}/download/{type}', [AdminCalonSiswaController::class, 'download'])->name('admin.calon-siswa.download');
 
+        Route::get('/beranda', [AdminBerandaPpdbController::class, 'index'])->name('admin.beranda.index');
+        Route::post('/beranda/update', [AdminBerandaPpdbController::class, 'update'])->name('admin.beranda.update');
+        Route::post('/beranda/status', [AdminBerandaPpdbController::class, 'updateStatus'])->name('admin.beranda.update-status');
+
+        Route::get('/persyaratan-ppdb', [AdminPersyaratanPpdbController::class, 'index'])->name('admin.persyaratan-ppdb.index');
+        Route::post('/persyaratan-ppdb/update', [AdminPersyaratanPpdbController::class, 'update'])->name('admin.persyaratan-ppdb.update');
+
+        Route::get('/jadwal-ppdb', [AdminJadwalPpdbController::class, 'index'])->name('admin.jadwal-ppdb.index');
+        Route::post('/jadwal-ppdb', [AdminJadwalPpdbController::class, 'store'])->name('admin.jadwal-ppdb.store');
+        Route::put('/jadwal-ppdb/{id}', [AdminJadwalPpdbController::class, 'update'])->name('admin.jadwal-ppdb.update');
+        Route::delete('/jadwal-ppdb/{id}', [AdminJadwalPpdbController::class, 'destroy'])->name('admin.jadwal-ppdb.destroy');
+
+        Route::get('/siswa/export', [SiswaController::class, 'export'])->name('admin.siswa.export');
         Route::resource('/siswa', SiswaController::class)->names([
             'index' => 'admin.siswa.index',
             'create' => 'admin.siswa.create',
@@ -100,7 +122,8 @@ Route::get('/siswa/export', [SiswaController::class, 'export'])->name('admin.sis
             'update' => 'admin.siswa.update',
             'destroy' => 'admin.siswa.destroy',
         ]);
-Route::get('/guru-export', [GuruController::class, 'export'])->name('admin.guru.export');
+
+        Route::get('/guru-export', [GuruController::class, 'export'])->name('admin.guru.export');
         Route::resource('/guru', GuruController::class)->names([
             'index' => 'admin.guru.index',
             'create' => 'admin.guru.create',

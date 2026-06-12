@@ -27,6 +27,18 @@
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 mb-3">
+                                    <label class="form-label">Semester</label>
+                                    <select name="semester_id" class="form-control @error('semester_id') is-invalid @enderror" required>
+                                        <option value="">Pilih Semester</option>
+                                        @foreach($semester as $s)
+                                            <option value="{{ $s->id }}" {{ old('semester_id', $currentSemester->id) == $s->id ? 'selected' : '' }}>{{ $s->tahun_ajaran }} - {{ $s->semester }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('semester_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6 mb-3">
                                     <label class="form-label">Guru</label>
                                     <select name="guru_id" class="form-control @error('guru_id') is-invalid @enderror" required>
                                         <option value="">Pilih Guru</option>
@@ -40,6 +52,8 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Kelas</label>
                                     <select name="kelas_id" class="form-control @error('kelas_id') is-invalid @enderror" required>

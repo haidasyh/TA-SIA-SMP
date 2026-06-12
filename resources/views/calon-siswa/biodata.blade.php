@@ -163,6 +163,12 @@
                                         <input type="file" class="form-control" id="pasfoto" name="pasfoto" accept=".jpg,.jpeg,.png">
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="berkas_persetujuan" class="form-label fw-semibold">Berkas Persetujuan</label>
+                                        <input type="file" class="form-control" id="berkas_persetujuan" name="berkas_persetujuan" accept=".pdf,.jpg,.jpeg,.png">
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="text-center mt-5">
@@ -226,7 +232,7 @@
                             </div>
                         </div>
 
-                        @if(isset($data['berkas_akta_name']) || isset($data['berkas_kk_name']) || isset($data['berkas_ktp_ortu_name']) || isset($data['pasfoto_name']))
+                        @if(isset($data['berkas_akta_name']) || isset($data['berkas_kk_name']) || isset($data['berkas_ktp_ortu_name']) || isset($data['berkas_persetujuan_name']) || isset($data['pasfoto_name']))
                             <div class="mb-4">
                                 <h5 class="fw-bold mb-3">BERKAS YANG DIUPLOAD</h5>
                                 @if(isset($data['berkas_akta_name']))
@@ -239,12 +245,12 @@
                                         </div>
                                         <div id="skhu" class="file-content" style="display: none;">
                                             @if(str_ends_with(strtolower($data['berkas_akta_name']), '.pdf'))
-                                                <a href="{{ asset('storage/' . $data['berkas_akta_path']) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                <a href="{{ Storage::url($data['berkas_akta_path']) }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                                     <i class="bi bi-file-earmark-pdf me-1"></i> Lihat {{ $data['berkas_akta_name'] }}
                                                 </a>
                                             @else
                                                 <div class="mt-2">
-                                                    <img src="{{ asset('storage/' . $data['berkas_akta_path']) }}" alt="{{ $data['berkas_akta_name'] }}" class="img-thumbnail" style="max-width: 300px;">
+                                                    <img src="{{ Storage::url($data['berkas_akta_path']) }}" alt="{{ $data['berkas_akta_name'] }}" class="img-thumbnail" style="max-width: 300px;">
                                                 </div>
                                             @endif
                                         </div>
@@ -260,12 +266,12 @@
                                         </div>
                                         <div id="kk" class="file-content" style="display: none;">
                                             @if(str_ends_with(strtolower($data['berkas_kk_name']), '.pdf'))
-                                                <a href="{{ asset('storage/' . $data['berkas_kk_path']) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                <a href="{{ Storage::url($data['berkas_kk_path']) }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                                     <i class="bi bi-file-earmark-pdf me-1"></i> Lihat {{ $data['berkas_kk_name'] }}
                                                 </a>
                                             @else
                                                 <div class="mt-2">
-                                                    <img src="{{ asset('storage/' . $data['berkas_kk_path']) }}" alt="{{ $data['berkas_kk_name'] }}" class="img-thumbnail" style="max-width: 300px;">
+                                                    <img src="{{ Storage::url($data['berkas_kk_path']) }}" alt="{{ $data['berkas_kk_name'] }}" class="img-thumbnail" style="max-width: 300px;">
                                                 </div>
                                             @endif
                                         </div>
@@ -281,17 +287,38 @@
                                         </div>
                                         <div id="ktp" class="file-content" style="display: none;">
                                             @if(str_ends_with(strtolower($data['berkas_ktp_ortu_name']), '.pdf'))
-                                                <a href="{{ asset('storage/' . $data['berkas_ktp_ortu_path']) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                <a href="{{ Storage::url($data['berkas_ktp_ortu_path']) }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                                     <i class="bi bi-file-earmark-pdf me-1"></i> Lihat {{ $data['berkas_ktp_ortu_name'] }}
                                                 </a>
                                             @else
                                                 <div class="mt-2">
-                                                    <img src="{{ asset('storage/' . $data['berkas_ktp_ortu_path']) }}" alt="{{ $data['berkas_ktp_ortu_name'] }}" class="img-thumbnail" style="max-width: 300px;">
+                                                    <img src="{{ Storage::url($data['berkas_ktp_ortu_path']) }}" alt="{{ $data['berkas_ktp_ortu_name'] }}" class="img-thumbnail" style="max-width: 300px;">
                                                 </div>
                                             @endif
                                         </div>
                                     </div>
                                 @endif
+                                @if(isset($data['berkas_persetujuan_name']))
+                                    <div class="mb-3">
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <div class="fw-semibold">Berkas Persetujuan</div>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary toggleFileBtn" data-target="persetujuan">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </div>
+                                        <div id="persetujuan" class="file-content" style="display: none;">
+                                            @if(str_ends_with(strtolower($data['berkas_persetujuan_name']), '.pdf'))
+                                                <a href="{{ Storage::url($data['berkas_persetujuan_path']) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-file-earmark-pdf me-1"></i> Lihat {{ $data['berkas_persetujuan_name'] }}
+                                                </a>
+                                            @else
+                                                <div class="mt-2">
+                                                    <img src="{{ Storage::url($data['berkas_persetujuan_path']) }}" alt="{{ $data['berkas_persetujuan_name'] }}" class="img-thumbnail" style="max-width: 300px;">
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif                                
                                 @if(isset($data['pasfoto_name']))
                                     <div class="mb-3">
                                         <div class="d-flex align-items-center gap-2 mb-1">
@@ -302,7 +329,7 @@
                                         </div>
                                         <div id="pasfoto" class="file-content" style="display: none;">
                                             <div class="mt-2">
-                                                <img src="{{ asset('storage/' . $data['pasfoto_path']) }}" alt="{{ $data['pasfoto_name'] }}" class="img-thumbnail" style="max-width: 200px;">
+                                                <img src="{{ Storage::url($data['pasfoto_path']) }}" alt="{{ $data['pasfoto_name'] }}" class="img-thumbnail" style="max-width: 200px;">
                                             </div>
                                         </div>
                                     </div>

@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
             RolesPermissionsSeeder::class,
             UserSeeder::class,
             KategoriTugasSeeder::class,
+            FillSemesterIdSeeder::class,
+            BerandaSeeder::class,
         ]);
     }
 }

@@ -341,26 +341,29 @@
             background: rgba(80, 114, 123, 0.22);
         }
 
-        .hero-image {
-            aspect-ratio: 1 / 1;
-            max-width: 360px;
-            margin-inline: auto;
+        .hero-image, .hero-image img {
+            aspect-ratio: 4 / 3;
+            width: 100%;
+            max-width: 620px;
+            margin-left: auto;
+            margin-right: 0;
             border-radius: 2rem;
+            object-fit: cover;
         }
 
-        .about-image {
+        .about-image, .about-image img {
             aspect-ratio: 1 / 1;
-            max-width: 320px;
-            min-height: 320px;
+            width: 100%;
+            max-width: 400px;
             border-radius: 1.75rem;
+            object-fit: cover;
         }
 
-        .gallery-image {
-            aspect-ratio: 3 / 4;
-            max-width: 320px;
-            min-height: 360px;
-            margin-inline: auto;
+        .gallery-image, .gallery-image img {
+            aspect-ratio: 4 / 3;
+            width: 100%;
             border-radius: 1.5rem;
+            object-fit: cover;
         }
 
         .placeholder-box i,
