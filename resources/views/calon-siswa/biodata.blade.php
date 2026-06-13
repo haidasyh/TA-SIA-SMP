@@ -337,34 +337,37 @@
                             </div>
                         @endif
 
-                        <div class="border p-3 mb-4" style="background: #f8f9fa;">
-                            <p class="mb-0 small">
-                                Saya yang tercantum di atas menyatakan bahwa data yang saya isikan di atas adalah benar.
-                                Dan Saya menyatakan mengikuti proses PPDB secara benar dan bersedia menerima konsekuensi
-                                jika di kemudian hari data yang saya ungkap tidak sesuai dengan data sebenarnya,
-                                maka saya bersedia mendapat sanksi sesuai Undang-undang yang berlaku.
-                            </p>
-                            <div class="mt-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="confirm" required>
-                                    <label class="form-check-label" for="confirm">Saya setuju dengan pernyataan di atas <span class="text-danger">*</span></label>
+                        <div class="d-flex gap-3 justify-content-center">
+                        <form action="{{ route('biodata-peserta.store') }}" method="POST" id="confirmForm">
+                            @csrf
+
+                            <div class="border p-3 mb-4" style="background: #f8f9fa;">
+                                <p class="mb-0 small">
+                                    Saya yang tercantum di atas menyatakan bahwa data yang saya isikan di atas adalah benar.
+                                    Dan Saya menyatakan mengikuti proses PPDB secara benar dan bersedia menerima konsekuensi
+                                    jika di kemudian hari data yang saya ungkap tidak sesuai dengan data sebenarnya,
+                                    maka saya bersedia mendapat sanksi sesuai Undang-undang yang berlaku.
+                                </p>
+                                <div class="mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="confirm" name="setuju_pernyataan" value="1" required>
+                                        <label class="form-check-label" for="confirm">
+                                            Saya setuju dengan pernyataan di atas <span class="text-danger">*</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="d-flex gap-3 justify-content-center">
-                            <form action="{{ route('biodata-peserta.back', 2) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn px-4 py-2" style="border: 2px solid #333; border-radius: 8px; background: #fff; color: #333; font-weight: 500;">
+                            <div class="d-flex gap-3 justify-content-center">
+                                <button type="submit" formaction="{{ route('biodata-peserta.back', 2) }}" class="btn px-4 py-2" style="border: 2px solid #333; border-radius: 8px; background: #fff; color: #333; font-weight: 500;">
                                     Kembali
                                 </button>
-                            </form>
-                            <form action="{{ route('biodata-peserta.store') }}" method="POST" id="confirmForm">
-                                @csrf
+                                
                                 <button type="submit" class="btn px-4 py-2" style="border: 2px solid #333; border-radius: 8px; background: #fff; color: #333; font-weight: 500;">
                                     Simpan
                                 </button>
-                            </form>
+                            </div>
+                        </form>
                         </div>
                     @endif
                 </div>

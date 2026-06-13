@@ -94,7 +94,6 @@
                 <h1 class="persyaratan-heading">Persyaratan Pendaftaran</h1>
                 <p class="persyaratan-copy">Informasi lengkap tentang syarat dan ketentuan pendaftaran calon murid baru SMP Negeri 1 Bataguh.</p>
 
-                {{-- DINAMIS: SEKSI JADWAL PELAKSANAAN --}}
                 <div class="mb-5">
                     <h3 class="persyaratan-section-title">
                         <i class="bi bi-calendar-check"></i>
@@ -114,13 +113,28 @@
                                 @forelse($jadwal as $item)
                                     <tr>
                                         <td>{{ $item->kegiatan }}</td>
-                                        <td>{{ $item->tanggal }}</td>
+                                        <td>{{ $item->formatted_tanggal }}</td>
                                         <td>{{ $item->waktu }}</td>
                                         <td>{{ $item->lokasi }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center text-muted">Belum ada data jadwal pelaksanaan.</td>
+                                        <td>Pendaftaran & Verifikasi Berkas</td>
+                                        <td>01 Juni 2025 s/d 30 Juni 2025</td>
+                                        <td>08.00 - 16.00 WIB</td>
+                                        <td>Online / Offline</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pengumuman Hasil Seleksi</td>
+                                        <td>05 Juli 2025</td>
+                                        <td>10.00 WIB</td>
+                                        <td>Website Sekolah</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Daftar Ulang</td>
+                                        <td>07 Juli 2025 s/d 10 Juli 2025</td>
+                                        <td>08.00 - 15.00 WIB</td>
+                                        <td>SMP Negeri 1 Bataguh</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -128,7 +142,6 @@
                     </div>
                 </div>
 
-                {{-- DINAMIS: SEKSI PERSYARATAN UMUM & KHUSUS --}}
                 <div class="mb-5">
                     <h3 class="persyaratan-section-title">
                         <i class="bi bi-clipboard-check"></i>
@@ -138,26 +151,58 @@
                     <div class="mb-4">
                         <h5 class="persyaratan-subtitle">1. Persyaratan Umum</h5>
                         <ol class="persyaratan-list">
-                            {!! $persyaratan->umum ?? '<li>Belum ada data persyaratan umum.</li>' !!}
+                            @if($persyaratan->umum)
+                                @foreach(explode("\n", $persyaratan->umum) as $point)
+                                    @if(trim($point))
+                                        <li>{{ trim($point) }}</li>
+                                    @endif
+                                @endforeach
+                            @else
+                                <li>Berusia paling tinggi 15 (lima belas) tahun pada tanggal 01 Juli 2025;</li>
+                                <li>Bersedia mengikuti seluruh kegiatan sekolah;</li>
+                                <li>Kartu keluarga (KK);</li>
+                                <li>Akta kelahiran (asli atau surat keterangan lahir yang dikeluarkan oleh pihak yang berwenang);</li>
+                                <li>Memiliki cetak NISN resmi dari SD/MI.</li>
+                            @endif
                         </ol>
                     </div>
 
                     <div>
                         <h5 class="persyaratan-subtitle">2. Persyaratan Khusus</h5>
                         <ol class="persyaratan-list">
-                            {!! $persyaratan->khusus ?? '<li>Belum ada data persyaratan khusus.</li>' !!}
+                            @if($persyaratan->khusus)
+                                @foreach(explode("\n", $persyaratan->khusus) as $point)
+                                    @if(trim($point))
+                                        <li>{{ trim($point) }}</li>
+                                    @endif
+                                @endforeach
+                            @else
+                                <li>Calon murid wajib mengisi formulir pendaftaran secara lengkap pada portal yang tersedia;</li>
+                                <li>Menjaga kesesuaian data yang diinput dengan berkas fisik asli saat verifikasi;</li>
+                                <li>Calon murid harus mengunggah seluruh dokumen pendukung pendaftaran yang diminta.</li>
+                            @endif
                         </ol>
                     </div>
                 </div>
 
-                {{-- DINAMIS: SEKSI ALUR PELAKSANAAN --}}
                 <div>
                     <h3 class="persyaratan-section-title">
                         <i class="bi bi-list-stars"></i>
                         Alur Pelaksanaan
                     </h3>
                     <ol class="persyaratan-list">
-                        {!! $persyaratan->alur ?? '<li>Belum ada data alur pelaksanaan.</li>' !!}
+                        @if($persyaratan->alur)
+                            @foreach(explode("\n", $persyaratan->alur) as $point)
+                                @if(trim($point))
+                                    <li>{{ trim($point) }}</li>
+                                @endif
+                            @endforeach
+                        @else
+                            <li>Calon murid baru wajib mengisi dan mengunggah dokumen pada portal pendaftaran PPDB online;</li>
+                            <li>Panitia sekolah melakukan verifikasi dan validasi berkas yang calon murid baru telah upload;</li>
+                            <li>Panitia sekolah melakukan proses verifikasi dan validasi berkas pendaftaran;</li>
+                            <li>Siswa yang lulus wajib melakukan daftar ulang ke sekolah dengan membawa berkas asli.</li>
+                        @endif
                     </ol>
                 </div>
             </div>

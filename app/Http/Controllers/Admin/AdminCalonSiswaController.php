@@ -47,8 +47,9 @@ class AdminCalonSiswaController extends Controller
     public function store(StoreCalonSiswaRequest $request)
     {
         $validated = $request->validated();
-
-        $validated['no_pendaftaran'] = 'PSB-' . date('Ymd') . '-' . rand(1000, 9999);
+        $lastSiswa = CalonSiswa::orderBy('id', 'desc')->first();
+        $nextNumber = $lastSiswa ? intval(substr($lastSiswa->no_pendaftaran, -4)) + 1 : 1;
+        $validated['no_pendaftaran'] = 'PSB-' . date('Y') . '-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
         $validated['status_verifikasi'] = 'Pending'; 
 
         CalonSiswa::create($validated);

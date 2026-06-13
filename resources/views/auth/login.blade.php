@@ -307,8 +307,25 @@
                                     </button>
                                 </div>
 
-                                <div class="forgot-wrap">
-                                    <a href="#" class="forgot-link">Lupa Password?</a>
+                                <div class="mb-4 d-flex justify-content-between align-items-center">
+                                    <div class="form-check m-0">
+                                        <input 
+                                            type="checkbox" 
+                                            name="remember" 
+                                            id="remember" 
+                                            class="form-check-input" 
+                                            style="cursor: pointer; accent-color: #50727b;"
+                                        >
+                                        <label 
+                                            class="form-check-label small fw-semibold text-secondary" 
+                                            for="remember" 
+                                            style="cursor: pointer; user-select: none;"
+                                        >
+                                            Ingat Saya
+                                        </label>
+                                    </div>
+                                    
+                                    <a href="{{ route('password.request') }}" class="forgot-link">Lupa Password?</a>
                                 </div>
 
                                 <div class="login-submit-wrap">

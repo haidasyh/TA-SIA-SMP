@@ -8,7 +8,7 @@ class StoreCalonSiswaRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Jangan lupa diubah ke true
+        return true; 
     }
 
     public function rules(): array

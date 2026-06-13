@@ -15,7 +15,6 @@ class CalonSiswaController extends Controller
 {
     public function index()
     {
-        // Proteksi status buka/tutup pendaftaran PPDB
         $ppdbStatus = Setting::get('ppdb_status', 'nonaktif');
         if ($ppdbStatus !== 'aktif') {
             return view('calon-siswa.pendaftaran-tutup');
@@ -27,9 +26,6 @@ class CalonSiswaController extends Controller
         return view('calon-siswa.biodata', compact('step', 'data'));
     }
 
-    /**
-     * Eksekusi Step 1 (Validasi NISN & Tahun Lulus)
-     */
     public function step1(StoreStep1Request $request)
     {
         Session::put('pendaftaran_step', 2);
@@ -38,15 +34,11 @@ class CalonSiswaController extends Controller
         return redirect()->route('biodata-peserta');
     }
 
-    /**
-     * Eksekusi Step 2 (Validasi Data Pribadi & Upload Berkas Temp)
-     */
     public function step2(StoreStep2Request $request)
     {
         $validated = $request->validated();
         $pendaftaranData = Session::get('pendaftaran_data', []);
 
-        // Kelola file upload secara berkala ke folder temp
         foreach (['berkas_akta', 'berkas_kk', 'berkas_ktp_ortu', 'berkas_persetujuan', 'pasfoto'] as $field) {
             if ($request->hasFile($field)) {
                 $validated[$field . '_name'] = $request->file($field)->getClientOriginalName();
@@ -66,40 +58,53 @@ class CalonSiswaController extends Controller
         return redirect()->route('biodata-peserta');
     }
 
-    /**
-     * Final Step: Penyimpanan Data Permanen ke Database
-     */
     public function store(Request $request)
     {
+        $request->validate([
+            'setuju_pernyataan' => 'required|accepted',
+        ], [
+            'setuju_pernyataan.accepted' => 'Anda harus mencentang persetujuan untuk menyelesaikan pendaftaran.',
+        ]);
+        
         $pendaftaranData = Session::get('pendaftaran_data', []);
 
         if (empty($pendaftaranData)) {
             return redirect()->route('biodata-peserta')->with('error', 'Sesi pendaftaran telah kedaluwarsa.');
         }
 
-        // 🛡️ OPTIMASI GENERATOR NO PENDAFTARAN: Kombinasi waktu + acak agar anti-bentrok (Race Condition)
-        $noPendaftaran = 'PSB-' . date('Ymd') . '-' . rand(1000, 9999);
+        $noPendaftaran = '';
 
-        $data = [
-            'no_pendaftaran'    => $noPendaftaran,
-            'nama'              => $pendaftaranData['nama'],
-            'nisn'              => $pendaftaranData['nisn'],
-            'jenis_kelamin'     => $pendaftaranData['jenis_kelamin'],
-            'tanggal_lahir'     => $pendaftaranData['tanggal_lahir'],
-            'no_hp_ortu'        => $pendaftaranData['no_hp_ortu'],
-            'asal_sekolah'      => $pendaftaranData['asal_sekolah'],
-            'alamat'            => $pendaftaranData['alamat'],
-            'status_verifikasi' => 'Pending',
-        ];
+        DB::transaction(function () use (&$noPendaftaran, $pendaftaranData) {
+            
+            // 1. 🛡️ KUNCI BARIS: Ambil data terakhir dan kunci agar request lain mengantre
+            $lastSiswa = CalonSiswa::orderBy('id', 'desc')
+                ->lockForUpdate()
+                ->first();
 
-        // Jalankan transaksi database agar aman menyeluruh
-        DB::transaction(function () use (&$data, $pendaftaranData) {
+            // 2. Hitung nomor urut berikutnya (jika belum ada data, mulai dari 1)
+            $nextNumber = $lastSiswa ? intval(substr($lastSiswa->no_pendaftaran, -4)) + 1 : 1;
+            $year = date('Y');
+            
+            // 3. Format menjadi urutan cantik (Contoh: PSB-2026-0001)
+            $noPendaftaran = 'PSB-' . $year . '-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+
+            $data = [
+                'no_pendaftaran'    => $noPendaftaran, // Nomor urut rapi dimasukkan ke database
+                'nama'              => $pendaftaranData['nama'],
+                'nisn'              => $pendaftaranData['nisn'],
+                'jenis_kelamin'     => $pendaftaranData['jenis_kelamin'],
+                'tanggal_lahir'     => $pendaftaranData['tanggal_lahir'],
+                'no_hp_ortu'        => $pendaftaranData['no_hp_ortu'],
+                'asal_sekolah'      => $pendaftaranData['asal_sekolah'],
+                'alamat'            => $pendaftaranData['alamat'],
+                'status_verifikasi' => 'Pending',
+            ];
+
             foreach (['berkas_akta', 'berkas_kk', 'berkas_ktp_ortu', 'berkas_persetujuan', 'pasfoto'] as $field) {
                 if (isset($pendaftaranData[$field . '_path'])) {
                     $tempPath = $pendaftaranData[$field . '_path'];
                     $permanentPath = str_replace('berkas-calon-siswa-temp', 'berkas-calon-siswa-tetap', $tempPath);
                     
-                    // Pindahkan file dari folder temp ke folder arsip pendaftaran tetap sekolah
                     if (Storage::disk('public')->exists($tempPath)) {
                         Storage::disk('public')->move($tempPath, $permanentPath);
                         $data[$field] = $permanentPath;
@@ -107,12 +112,12 @@ class CalonSiswaController extends Controller
                 }
             }
 
+            // 4. Simpan data permanen ke database
             CalonSiswa::create($data);
         });
 
-        // Bersihkan seluruh data session wizard setelah pendaftaran sukses
         Session::forget(['pendaftaran_step', 'pendaftaran_data']);
 
-        return redirect()->route('biodata-peserta')->with('success', 'Pendaftaran berhasil! Simpan No. Pendaftaran Anda: ' . $noPendaftaran);
+        return redirect()->route('biodata-peserta')->with('success', 'Pendaftaran berhasil! No. Pendaftaran Anda: ' . $noPendaftaran);
     }
 }
